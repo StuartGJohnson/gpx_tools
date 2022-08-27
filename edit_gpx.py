@@ -36,9 +36,10 @@ def patch_deletions_with_template(
         region_min = min(deletion_region_indices)
         region_max = max(deletion_region_indices) + 1
         # print(region_label, region_min, region_max, dist)
-        # deletions are in the template, not the query, so
-        # a valid deletion progresses in the template
-        if (alignment.index2[region_max-1] - alignment.index2[region_min]) > 1:
+        # if this misaligned region is better sampled in the template, mark it
+        # as a deletion. Otherwise, forget about it - it's an insertion.
+        if (alignment.index2[region_max-1] - alignment.index2[region_min])\
+                > (alignment.index1[region_max-1] - alignment.index1[region_min]):
             deletion_regions.append((region_min, region_max))
     # now copy the appropriate patches in the query and template into
     # the result. First, copy in the entire query.
