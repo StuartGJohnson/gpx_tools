@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 import edit_gpx
 from edit_gpx import gpx_to_points3
-import folium
+import os
 
 
 class MyTestCase(unittest.TestCase):
@@ -71,52 +71,30 @@ class MyTestCase(unittest.TestCase):
         print(np.max(dist_mat))
 
     def test_gpx_dtw(self):
-        # run the gpx data through the patching process
-        gf = open('../data/Calero_Mayfair_ranch_trail.gpx', 'r')
+        qfile = '../data/Calero_Mayfair_ranch_trail.gpx'
+        tfile = '../data/Calero_big_ride_2.gpx'
+        ofile = 'calero_fixed.gpx'
+        gpx = edit_gpx.edit_gpx(qfile, tfile, ofile, do_plots=False, folium_output=False)
+        self.assertTrue(os.path.exists(ofile))
+        gf = open(qfile, 'r')
         gfp_query = gp.parse(gf)
         gf.close()
-        gfp_query_copy = gfp_query.clone()
-        gf = open('../data/Calero_big_ride_2.gpx', 'r')
+        gf = open(tfile, 'r')
         gfp_template = gp.parse(gf)
         gf.close()
-        # Hmm, should we assert that each gfp has a single track and segment?
-        # Or, perhaps perform the analysis on each track/segment?
-        # Do strava gpx tracks ever have more than one track/segment?
-        gfp_query_points = gfp_query.tracks[0].segments[0].points
-        gfp_template_points = gfp_template.tracks[0].segments[0].points
-        len_query = len(gfp_query_points)
-        len_template = len(gfp_template_points)
-        # unpack gfp into numpy arrays
-        t0 = time.time()
-        query_points, mean_point = gpx_to_points3(gfp_query_points)
-        qp_time = edit_gpx.gpx_to_time_points(gfp_query_points)
-        print(np.mean(query_points, axis=0))
-        template_points, _ = gpx_to_points3(gfp_template_points, mean_point)
-        tp_time = edit_gpx.gpx_to_time_points(gfp_template_points)
-        # patch the query - 50 meters seems a good number for mountain biking!
-        fixed_points, fixed_points_time = edit_gpx.patch_deletions_with_template(
-            query_points,
-            template_points,
-            50,
-            query_time=qp_time,
-            template_time=tp_time)
-        # convert all values back to lat/lon for plotting
-        qp_lat_lon = edit_gpx.points_to_lat_lon(query_points, mean_point)
-        tp_lat_lon = edit_gpx.points_to_lat_lon(template_points, mean_point)
-        fp_lat_lon = edit_gpx.points_to_lat_lon(fixed_points, mean_point)
-        # build map
-        map_center = np.mean(np.array(fp_lat_lon), axis=0)
-        mymap = folium.Map(location=map_center, zoom_start=14, tiles=None)
-        folium.TileLayer().add_to(mymap)
-        # add lines
-        folium.PolyLine(list(fp_lat_lon), color='green', weight=4.5, opacity=0.5).add_to(mymap)
-        folium.PolyLine(list(qp_lat_lon), color='red', weight=4.5, opacity=0.5).add_to(mymap)
-        folium.PolyLine(list(tp_lat_lon), color='blue', weight=4.5, opacity=0.5).add_to(mymap)
-        mymap.save('test_mapping.html')
-        # and generate a proper gpx object, and write to file
-        gpx = edit_gpx.points_to_gpx('Calero + Mayfair ranch patched', gfp_query_copy, fixed_points, mean_point, fixed_points_time)
-        with open('calero_fixed.gpx', 'w') as f:
-            f.write(gpx.to_xml())
+        gf = open(ofile, 'r')
+        gfp_output = gp.parse(gf)
+        gf.close()
+        # gpx and the output should be quite similar!
+        print('output points:', len(gpx.tracks[0].segments[0].points))
+        self.assertEqual(len(gpx.tracks[0].segments[0].points), len(gfp_output.tracks[0].segments[0].points))
+        # todo: more checks!
+        # output point count should be greater than the query but less than the template - in this case
+        print('query points:', len(gfp_query.tracks[0].segments[0].points))
+        print('template points:', len(gfp_template.tracks[0].segments[0].points))
+        self.assertGreater(len(gpx.tracks[0].segments[0].points), len(gfp_query.tracks[0].segments[0].points))
+        self.assertLess(len(gpx.tracks[0].segments[0].points), len(gfp_template.tracks[0].segments[0].points))
+        # todo: more checks!
 
 
 if __name__ == '__main__':
