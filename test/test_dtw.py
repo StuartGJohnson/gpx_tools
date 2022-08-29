@@ -70,6 +70,7 @@ class MyTestCase(unittest.TestCase):
 
     def test_dtw_patch(self):
         # merge two trajectories into one. use edit_gpx.patch_deletions_with_template
+        # also generates plots for the README.md
         query, template = gen_2d(100)
         smad_factor = 2
         delta_dist_median, delta_dist_smad = edit_gpx.get_point_stats(query, smad_factor)

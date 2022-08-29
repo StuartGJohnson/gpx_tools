@@ -71,6 +71,8 @@ class MyTestCase(unittest.TestCase):
         print(np.max(dist_mat))
 
     def test_gpx_dtw(self):
+        # process the gpx files from the Calero ride
+        # also generates plots for the README.md
         qfile = '../data/Calero_Mayfair_ranch_trail.gpx'
         tfile = '../data/Calero_big_ride_2.gpx'
         ofile = 'calero_fixed.gpx'
