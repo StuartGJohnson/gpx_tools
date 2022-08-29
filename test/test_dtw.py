@@ -71,16 +71,24 @@ class MyTestCase(unittest.TestCase):
     def test_dtw_patch(self):
         # merge two trajectories into one. use edit_gpx.patch_deletions_with_template
         query, template = gen_2d(100)
-        delta_dist_median, delta_dist_smad = edit_gpx.get_point_stats(query)
-        # patch the query
-        # aligned values more than 3*SMAD indicate differences to be patched
         smad_factor = 2
-        output, _ = edit_gpx.patch_deletions_with_template(query, template, delta_dist_median+smad_factor*delta_dist_smad)
+        delta_dist_median, delta_dist_smad = edit_gpx.get_point_stats(query, smad_factor)
+        # patch the query
+        # aligned values more than smad_factor*SMAD indicate differences to be patched
+        output, _ = edit_gpx.patch_deletions_with_template(query,
+                                                           template,
+                                                           delta_dist_median+smad_factor*delta_dist_smad,
+                                                           do_plots=True,
+                                                           do_plots_output_name='test_dtw_patch')
 
         plt.figure()
         plt.plot(output[:, 0], 'b+')
         plt.plot(output[:, 1], 'r+')
         plt.title('corrected query')
+        plt.xlabel('query index')
+        plt.ylabel('query value')
+        plt.legend(['query[:,0]', 'query[:,1]'], loc='center')
+        plt.savefig('test_dtw_patch.corrected.png')
         plt.show()
 
         # compute distance along the output - this should be 5pi/2, except

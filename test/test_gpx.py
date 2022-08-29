@@ -74,7 +74,11 @@ class MyTestCase(unittest.TestCase):
         qfile = '../data/Calero_Mayfair_ranch_trail.gpx'
         tfile = '../data/Calero_big_ride_2.gpx'
         ofile = 'calero_fixed.gpx'
-        gpx = edit_gpx.edit_gpx(qfile, tfile, ofile, do_plots=False, folium_output=False)
+        # reversing the query and template is ... interesting
+        #tfile = '../data/Calero_Mayfair_ranch_trail.gpx'
+        #qfile = '../data/Calero_big_ride_2.gpx'
+        #ofile = 'calero_fixed_reversed.gpx'
+        gpx = edit_gpx.edit_gpx(qfile, tfile, ofile, do_plots=True, folium_output=True)
         self.assertTrue(os.path.exists(ofile))
         gf = open(qfile, 'r')
         gfp_query = gp.parse(gf)
@@ -89,11 +93,15 @@ class MyTestCase(unittest.TestCase):
         print('output points:', len(gpx.tracks[0].segments[0].points))
         self.assertEqual(len(gpx.tracks[0].segments[0].points), len(gfp_output.tracks[0].segments[0].points))
         # todo: more checks!
-        # output point count should be greater than the query but less than the template - in this case
-        print('query points:', len(gfp_query.tracks[0].segments[0].points))
-        print('template points:', len(gfp_template.tracks[0].segments[0].points))
-        self.assertGreater(len(gpx.tracks[0].segments[0].points), len(gfp_query.tracks[0].segments[0].points))
-        self.assertLess(len(gpx.tracks[0].segments[0].points), len(gfp_template.tracks[0].segments[0].points))
+        # output point count should be between the template and the query
+        query_points = len(gfp_query.tracks[0].segments[0].points)
+        template_points = len(gfp_template.tracks[0].segments[0].points)
+        print('query points:', query_points)
+        print('template points:', template_points)
+        min_points = min(query_points, template_points)
+        max_points = max(query_points, template_points)
+        self.assertGreaterEqual(len(gpx.tracks[0].segments[0].points), min_points)
+        self.assertLessEqual(len(gpx.tracks[0].segments[0].points), max_points)
         # todo: more checks!
 
 

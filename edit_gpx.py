@@ -17,14 +17,23 @@ def patch_deletions_with_template(
         dist_thresh: float,
         query_time=None,
         template_time=None,
-        do_plots=False) -> (np.ndarray, list):
+        do_plots=False,
+        do_plots_output_name=None) -> (np.ndarray, list):
     # compute distance along the template as a reference length
     track_time = False
-    if query_time is not None:
+    if query_time is not None and template_time is not None:
         track_time = True
     alignment = dtw.dtw(query, template, keep_internals=True)
     if do_plots:
-        alignment.plot(type="threeway")
+        ax = alignment.plot(type="threeway")
+        # since it seems a bit difficult to tidy up the plots with labels,
+        # lets dump a few values via print() so we can make some notes in text
+        # or figure captions
+        for i in range(0, query.shape[1]):
+            print('first query value on index ', i, ' is:', query[0, i])
+        if do_plots_output_name:
+            plot_file = os.path.splitext(do_plots_output_name)[0] + '.alignment.png'
+            ax.get_figure().savefig(plot_file)
     # merge these two trajectories into a single trajectory.
     # deletions are connected regions which are far from their aligned points
     pts_diff = template[alignment.index2, :] - query[alignment.index1, :]
@@ -85,7 +94,7 @@ def gpx_to_lat_lon(file_name):
     return points
 
 
-def get_point_stats(points, do_plots=True):
+def get_point_stats(points, smad_factor, do_plots=True):
     # compute outlier-robust point stats for misalignment detection
     delta = points[1:, :] - points[0:-1, :]
     delta_dist = np.linalg.norm(delta, axis=1)
@@ -94,7 +103,7 @@ def get_point_stats(points, do_plots=True):
     delta_dist_smad = sci_stats.median_abs_deviation(delta_dist, scale='normal')
     x = np.arange(0, len(delta_dist))
     y_med = np.ones(shape=(len(x),)) * delta_dist_median
-    y_plus = y_med + delta_dist_smad * 5
+    y_plus = y_med + delta_dist_smad * smad_factor
     if do_plots:
         print(delta_dist_median, delta_dist_smad)
         plt.figure()
@@ -213,7 +222,8 @@ def edit_gpx(query_file, template_file, output_file, dist_thresh=50, do_plots=Fa
         dist_thresh,
         query_time=qp_time,
         template_time=tp_time,
-        do_plots=do_plots)
+        do_plots=do_plots,
+        do_plots_output_name=output_file)
     # and generate a proper gpx object, and write to file
     gpx = points_to_gpx(' patched', gfp_query_copy, fixed_points, mean_point,
                         fixed_points_time)
@@ -229,10 +239,11 @@ def edit_gpx(query_file, template_file, output_file, dist_thresh=50, do_plots=Fa
         map_center = np.mean(np.array(fp_lat_lon), axis=0)
         mymap = folium.Map(location=map_center, zoom_start=14, tiles=None)
         folium.TileLayer().add_to(mymap)
-        # add lines
+        # add lines; note the dashes help distinguish trajectories which are typically on top
+        # of each other
         folium.PolyLine(list(fp_lat_lon), color='green', weight=4.5, opacity=0.5).add_to(mymap)
-        folium.PolyLine(list(qp_lat_lon), color='red', weight=4.5, opacity=0.5).add_to(mymap)
-        folium.PolyLine(list(tp_lat_lon), color='blue', weight=4.5, opacity=0.5).add_to(mymap)
+        folium.PolyLine(list(qp_lat_lon), color='red', weight=4.5, opacity=0.5, dash_array='10').add_to(mymap)
+        folium.PolyLine(list(tp_lat_lon), color='blue', weight=4.5, opacity=0.5, dash_array='10').add_to(mymap)
         folium_file = os.path.splitext(output_file)[0] + '.html'
         mymap.save(folium_file)
     # for unit testing
