@@ -19,6 +19,7 @@ An example of two trajectories with similar paths can be constructed as follows.
 <figure>
     <img src="test/test_dtw_patch.alignment.png">
     <figcaption>Fig. 1: a DTW alignment between two unit-circular trajectories out of phase by $ \pi / 2 $ </figcaption>
+    <br>
 </figure>
 <br>
 
