@@ -9,10 +9,11 @@ Note: this file uses LaTex support recently provided by Github. Sometimes these 
 
 An example of two trajectories with similar paths can be constructed as follows. We have two trajectories which move along the unit circle for a single circuit - and so of length $ 2\pi $. Using the dtw-python module, we can align these two trajectories via dynamic time warping - which is a global alignment based on euclidean distances between the two point sets. The alignment for this case is shown in figure 1:
 
-<figure style="text-align: center;">
+<figure>
     <img src="test/test_dtw_patch.alignment.png">
-    <figcaption>Fig. 1</figcaption>
+    <figcaption>Fig. 1: a DTW alignment between two unit-circular trajectories out of phase by $ \pi / 2 $ </figcaption>
 </figure>
+
 
 [fixed gpx example](https://stuartgjohnson.github.io/gpx_tools/test/calero_fixed.html)
 
