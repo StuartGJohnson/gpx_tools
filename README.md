@@ -63,15 +63,13 @@ The circular trajectory is repaired via the correction algorithm into the trajec
 </figure>
 <br>
 
-### GPX data
+## GPX example
 
+The typical usage model for the edit_gpx tool is to mend GPX tools obtained from Strava - when I am using this, I download my own GPX file of a damaged activity, and then ask whomever I rode or ran the activity with to send me the GPX file of their corresponding activity. Although Strava settings can be adjusted, I have found that typically a complete GPX file is only produced by the owner of the activity on Strava.
 
-
-
-
-
+An example of the repair of an activity at Calero County Park in California is shown in the following link (I suggest you open it in another tab or window so that you can read along with the comments here. At the time of writing it did not seem possible to get the README.md rendered page to render this interactive folium map):
 
 [fixed gpx example](https://stuartgjohnson.github.io/gpx_tools/test/calero_fixed.html)
 
-Where $x = 0$, evaluate $x + 1$.
-$$ \vec{r}_0 = (-x_0,0), x_0 > 0 $$
+In this example, there are three routes plotted. My route, the query, is in dashed red. My friend's route (provided here with his permission) is dashed blue. The corrected route is solid green. Note you should be able to zoom in and out on this map/route in your browser. You should see that the route is almost always showing the red dashes and the green together - recall the query (my route) is preferred. The fix is in the section near Bald Peaks - where I forgot to restart my device at the snack stop at the top of the climb up Longwall Canyon Trail. In that section the fixed route tracks my friend's ride along Bald Peaks Trail.
+
