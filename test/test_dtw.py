@@ -73,15 +73,27 @@ class MyTestCase(unittest.TestCase):
         # also generates plots for the README.md
         query, template = gen_2d(100)
         smad_factor = 2
-        delta_dist_median, delta_dist_smad = edit_gpx.get_point_stats(query, smad_factor)
+        output_name = 'test_dtw_patch'
+        # one could alternately consider the aligned query-template distance
+        # alignment = dtw.dtw(query, template, keep_internals=True)
+        # delta_dist_median, delta_dist_smad = edit_gpx.get_point_stats(query[alignment.index1, :],
+        #                                                              template[alignment.index2, :],
+        #                                                              smad_factor=smad_factor,
+        #                                                              do_plots=True,
+        #                                                              do_plots_output_name=output_name)
+        # but for repair purposes, we are looking for gaps in the query - i.e. outliers in the query distance
+        delta_dist_median, delta_dist_smad = edit_gpx.get_point_stats(points=query,
+                                                                      points2=None,
+                                                                      smad_factor=smad_factor,
+                                                                      do_plots=True,
+                                                                      do_plots_output_name=output_name)
         # patch the query
         # aligned values more than smad_factor*SMAD indicate differences to be patched
         output, _ = edit_gpx.patch_deletions_with_template(query,
                                                            template,
                                                            delta_dist_median+smad_factor*delta_dist_smad,
                                                            do_plots=True,
-                                                           do_plots_output_name='test_dtw_patch')
-
+                                                           do_plots_output_name=output_name)
         plt.figure()
         plt.plot(output[:, 0], 'b+')
         plt.plot(output[:, 1], 'r+')

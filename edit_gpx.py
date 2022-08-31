@@ -94,9 +94,12 @@ def gpx_to_lat_lon(file_name):
     return points
 
 
-def get_point_stats(points, smad_factor, do_plots=True):
+def get_point_stats(points, points2=None, smad_factor=2, do_plots=True, do_plots_output_name=None):
     # compute outlier-robust point stats for misalignment detection
-    delta = points[1:, :] - points[0:-1, :]
+    if points2 is None:
+        delta = points[1:, :] - points[0:-1, :]
+    else:
+        delta = points2 - points
     delta_dist = np.linalg.norm(delta, axis=1)
     # use MAD/SMAD to account for outliers
     delta_dist_median = np.median(delta_dist)
@@ -110,9 +113,16 @@ def get_point_stats(points, smad_factor, do_plots=True):
         plt.plot(x, delta_dist)
         plt.plot(x, y_med, 'r')
         plt.plot(x, y_plus, 'r--')
-        plt.title('distance increments along query')
-        plt.xlabel('index')
+        if points2 is None:
+            plt.title('distance increments along query')
+            plt.xlabel('index')
+        else:
+            plt.title('query-reference distance along alignment')
+            plt.xlabel('alignment index')
         plt.ylabel('dist')
+        if do_plots_output_name is not None:
+            plot_file = os.path.splitext(do_plots_output_name)[0] + '.point_stats.png'
+            plt.savefig(plot_file)
         plt.show()
     return delta_dist_median, delta_dist_smad
 
