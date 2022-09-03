@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-import edit_gpx
+import patch_gpx_time
 import sys
 
 if __name__ == '__main__':
-    edit_gpx.main(sys.argv[1:])
+    patch_gpx_time.main(sys.argv[1:])

@@ -5,8 +5,8 @@ import time
 import scipy
 import matplotlib.pyplot as plt
 
-import edit_gpx
-from edit_gpx import gpx_to_points3
+import patch_gpx_spatial
+from patch_gpx_spatial import gpx_to_points3
 import os
 
 
@@ -75,12 +75,12 @@ class MyTestCase(unittest.TestCase):
         # also generates plots for the README.md
         qfile = '../data/Calero_Mayfair_ranch_trail.gpx'
         tfile = '../data/Calero_big_ride_2.gpx'
-        ofile = 'calero_fixed.gpx'
+        ofile = 'calero_patched_spatial.gpx'
         # reversing the query and template is ... interesting
         #tfile = '../data/Calero_Mayfair_ranch_trail.gpx'
         #qfile = '../data/Calero_big_ride_2.gpx'
         #ofile = 'calero_fixed_reversed.gpx'
-        gpx = edit_gpx.edit_gpx(qfile, tfile, ofile, do_plots=True, folium_output=True)
+        gpx = patch_gpx_spatial.patch_gpx(qfile, tfile, ofile, do_plots=True, folium_output=True)
         self.assertTrue(os.path.exists(ofile))
         gf = open(qfile, 'r')
         gfp_query = gp.parse(gf)

@@ -32,12 +32,16 @@ Note also that the query trajectory is noisy - a typical case for any real data 
 As the alignment plot shows, these two trajectories have a shared central portion, but each extend past each other $ \pi / 2 $ - or a quarter of their circuit, at each end. These are the regions of no progress in either the reference or the query - the points at these unshared ends are all aligned to the same terminal index of the central aligned region. What we want our query correction algorithm to do is merge these two trajectories into one.
 </p>
 
-### Design preferences
-<p> For the purposes of repairing Strava activities, there are two design preferences. First, one of the trajectories needs to be preferred in the result. For example, if I am correcting my activity, I would prefer that the output is composed of the original data from my activity as much as possible. Second, when using data from either activity (the reference or template), I would prefer that data to be unchanged from the original. In other words, all data is as raw as possible.  This is easily accomplished (and satisfied by the data) when I assume the two trajectories represent two individuals participating in the same activity at the same time. If these activities are at different times - we need to do additional correction of time stamps in the GPX file - which is not necessarily that hard to do, but for future work. This desire to include raw data in the output also makes it simple to consider how to include other data, like heart rate or temperature, which may be included in the GPX file. And, in general, if you can avoid making up data, do so! Note that if we are going to correct missing data in one trajectory, it makes no sense to interpolate points, either - in addition to this being a form of making up data! Third, the algorithm should handle fairly complex trajectories which might pass through the same points - in any order or number of times. This argues for an alignment process, like DTW.</p>
+### Usage model
 
-### The correction algorithm
-A simple algorithm to satisfy the design preferences, where we have a preference for the query trajectory, is:
+### Design preferences
+<p> For the purposes of repairing Strava activities, there are two design preferences. First, one of the trajectories needs to be preferred in the result. For example, if I am correcting my activity, I would prefer that the output is composed of the original data from my activity as much as possible. Second, when using data from either activity, I would prefer that data to be unchanged from the original. Third, the algorithm should handle fairly complex trajectories which might pass through the same points - in any order or number of times. Fourth, the algorithm should assume that missing jointly traveled points could be present at the beginning and end of the activity.</p>
+
+### A correction algorithm
+
+An algorithm to satisfy the design preferences, where we have a preference for the query trajectory, is:
 <ol>
+<li> Compute the dynamic time warping between the query trajectory and the reference trajectory. </li>
 <li> Assign the query to the output trajectory via the DTW alignment index for the query.</li>
 <li> Assign portions of the reference to the output when the reference trajectory is missing in the query via the DTW alignment index for the reference. This corresponds to sections of the alignment which are vertical in figure 1.</li>
 <li>Eliminate repeated points in the output. Different spatial sampling intervals (and misaligned points) in the reference and query trajectories will result in points in one trajectory mapping to multiple points in the other trajectory.</li>
@@ -48,6 +52,21 @@ Some experimentation with this process with real GPX data (see below), suggests 
 
 A downside of this is now we have a nuisance parameter - the distance threshold. Since sampling intervals in real GPX data are quite complex - it is also not entirely clear (at this point) how to determine this from the data. However, I find that a distance threshold of 50m works fairly well for the mountain biking data included here. For the circular trajectory, I use robust (SMAD) statistics of the distance increments along the query. In a trajectory with a few large distance gaps in the query, the robust statistics will ignore the large values.
 </p>
+
+A second, much simpler algorithm is to simply find missing time intervals in the query trajectory and insert reference trajectory data present in those missing time intervals into the corrected output. This is slightly more complex due to possible data overhangs at the ends.
+
+<ol>
+<li> establish a time threshold, max_time_gap, above which time gaps in the query data are considering missing data - i.e. the user is not sampling the trajectory when he should.</li>
+<li> If the earliest timestamp in the reference is before the earliest timestamp in the query, and the difference is greater that max_time_gap, include the reference data before the query data in the output. </li>
+<li> Compute all (suspect) time gaps > max_time_gap in the query. </li>
+<li> Append all data in the query from the beginning (of the query) to the first time gap in the output.</li>
+<li> For each suspect time gap in the query:
+<ol>
+<li>Append all reference points within the time gap to the output.</li>
+<li>Append all query points after the time gap but before the next time gap (or end of the query) to the output.</li>
+</ol>
+<li> If the latest timestamp in the reference is after the latest timestamp in the query, and the difference is greater that max_time_gap, append the reference data with timestamps after the query data to the output. </li>
+</ol>
 
 ### Back to the example
 <p>
@@ -69,7 +88,7 @@ The typical usage model for the edit_gpx tool is to mend GPX files obtained from
 
 An example of the repair of an activity at Calero County Park in California is shown in the following link (I suggest you open it in another tab or window so that you can read along with the comments here. At the time of writing it did not seem possible to get the README.md rendered page to render this interactive folium map):
 
-[fixed gpx example](https://stuartgjohnson.github.io/gpx_tools/test/calero_fixed.html)
+[patched gpx example](https://stuartgjohnson.github.io/gpx_tools/test/calero_patched_spatial.html)
 
 In this example, there are three routes plotted. My route, the query, is in dashed red. My friend's route (provided here with his permission) is dashed blue. The corrected route is solid green. Note you should be able to zoom in and out on this map/route in your browser. You should see that the route is almost always showing the red dashes and the green together - recall the query (my route) is preferred. The fix is in the section near Bald Peaks - where I forgot to restart my device at the snack stop at the top of the climb up Longwall Canyon Trail. In that section the fixed route tracks my friend's ride along Bald Peaks Trail.
 

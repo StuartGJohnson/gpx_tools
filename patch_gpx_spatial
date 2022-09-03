@@ -1,0 +1,6 @@
+#!/usr/bin/env python3
+import patch_gpx_spatial
+import sys
+
+if __name__ == '__main__':
+    patch_gpx_spatial.main(sys.argv[1:])

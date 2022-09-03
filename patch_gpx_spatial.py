@@ -204,7 +204,7 @@ def points_to_gpx(
     return gfp_copy
 
 
-def edit_gpx(query_file, template_file, output_file, dist_thresh=50, do_plots=False, folium_output=False):
+def patch_gpx(query_file, template_file, output_file, dist_thresh=50, do_plots=False, folium_output=False):
     # run the gpx data through the patching process
     gf = open(query_file, 'r')
     gfp_query = gp.parse(gf)
@@ -261,7 +261,7 @@ def edit_gpx(query_file, template_file, output_file, dist_thresh=50, do_plots=Fa
 
 
 def main(args):
-    parser = argparse.ArgumentParser(description='edit_gpx - patch gpx file with another similar gpx file')
+    parser = argparse.ArgumentParser(description='patch_gpx_spatial - patch gpx file with another similar gpx file')
     parser.add_argument('query_gpx',
                         help='the name of the gpx file to be patched - it''s contents are preferred')
     parser.add_argument('template_gpx',
@@ -271,7 +271,7 @@ def main(args):
     parser.add_argument('--dist', default=50,
                         help='the distance threshold for query vs template misalignment (in meters) default=50')
     args = parser.parse_args(args)
-    edit_gpx(args.query_gpx, args.template_gpx, args.output_gpx, args.dist)
+    patch_gpx(args.query_gpx, args.template_gpx, args.output_gpx, args.dist)
 
 
 if __name__ == '__main__':

@@ -13,7 +13,7 @@ setup(
                       'Pillow ==9.2.0',
                       'imageio ==2.21.0',
                       'folium ==0.12.1.post1'],
-    scripts=['edit_gpx', 'edit_gpx.py'],
+    scripts=['patch_gpx_spatial', 'patch_gpx_spatial.py'],
     url='https://github.com/StuartGJohnson/gpx_tools',
     license='',
     author='Stuart Johnson',

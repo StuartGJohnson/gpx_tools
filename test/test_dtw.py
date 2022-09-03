@@ -3,7 +3,7 @@ import numpy as np
 import dtw
 import matplotlib.pyplot as plt
 import skimage.measure as measure
-import edit_gpx
+import patch_gpx_spatial
 import scipy.stats as sci_stats
 import folium
 
@@ -69,31 +69,31 @@ class MyTestCase(unittest.TestCase):
 
 
     def test_dtw_patch(self):
-        # merge two trajectories into one. use edit_gpx.patch_deletions_with_template
+        # merge two trajectories into one. use patch_gpx_spatial.patch_deletions_with_template
         # also generates plots for the README.md
         query, template = gen_2d(100)
         smad_factor = 2
         output_name = 'test_dtw_patch'
         # one could alternately consider the aligned query-template distance
         # alignment = dtw.dtw(query, template, keep_internals=True)
-        # delta_dist_median, delta_dist_smad = edit_gpx.get_point_stats(query[alignment.index1, :],
+        # delta_dist_median, delta_dist_smad = patch_gpx_spatial.get_point_stats(query[alignment.index1, :],
         #                                                              template[alignment.index2, :],
         #                                                              smad_factor=smad_factor,
         #                                                              do_plots=True,
         #                                                              do_plots_output_name=output_name)
         # but for repair purposes, we are looking for gaps in the query - i.e. outliers in the query distance
-        delta_dist_median, delta_dist_smad = edit_gpx.get_point_stats(points=query,
-                                                                      points2=None,
-                                                                      smad_factor=smad_factor,
-                                                                      do_plots=True,
-                                                                      do_plots_output_name=output_name)
+        delta_dist_median, delta_dist_smad = patch_gpx_spatial.get_point_stats(points=query,
+                                                                               points2=None,
+                                                                               smad_factor=smad_factor,
+                                                                               do_plots=True,
+                                                                               do_plots_output_name=output_name)
         # patch the query
         # aligned values more than smad_factor*SMAD indicate differences to be patched
-        output, _ = edit_gpx.patch_deletions_with_template(query,
-                                                           template,
-                                                           delta_dist_median+smad_factor*delta_dist_smad,
-                                                           do_plots=True,
-                                                           do_plots_output_name=output_name)
+        output, _ = patch_gpx_spatial.patch_deletions_with_template(query,
+                                                                    template,
+                                                                    delta_dist_median + smad_factor * delta_dist_smad,
+                                                                    do_plots=True,
+                                                                    do_plots_output_name=output_name)
         plt.figure()
         plt.plot(output[:, 0], 'b+')
         plt.plot(output[:, 1], 'r+')
