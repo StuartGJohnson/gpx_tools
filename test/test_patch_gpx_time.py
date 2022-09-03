@@ -119,9 +119,11 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(max(diff_query), 46)
         self.assertEqual(min(diff_query), 2)
         self.assertAlmostEqual(0.0, np.max(np.unique(diff_query) - [2.0, 46.0]), places=2)
+        # no gaps
         diff_template = template_points_time[1:, 0] - template_points_time[0:-1, 0]
         self.assertEqual(max(diff_template), 2)
         self.assertEqual(min(diff_template), 2)
+        # no gaps
         diff_fixed = fixed_points_time[1:, 0] - fixed_points_time[0:-1, 0]
         self.assertEqual(max(diff_fixed), 2)
         self.assertEqual(min(diff_fixed), 2)
