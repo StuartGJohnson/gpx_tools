@@ -83,17 +83,42 @@ class MyTestCase(unittest.TestCase):
         fixed_points_time, fixed_points_start_time = \
             patch_gpx_time.gpx_to_time_seconds(fixed.tracks[0].segments[0].points)
         #print(fixed_points_time)
-        print(fixed_points_start_time)
+        #print(fixed_points_start_time)
 
         query_points_time, query_points_start_time = \
             patch_gpx_time.gpx_to_time_seconds(q.tracks[0].segments[0].points)
         #print(query_points_time)
-        print(query_points_start_time)
+        #print(query_points_start_time)
 
         template_points_time, template_points_start_time = \
             patch_gpx_time.gpx_to_time_seconds(t.tracks[0].segments[0].points)
         #print(template_points_time)
-        print(template_points_start_time)
+        #print(template_points_start_time)
+
+        # check start times
+        self.assertAlmostEqual(
+            patch_gpx_time.diff_seconds(query_points_start_time, template_points_start_time),
+            36,
+            places=2)
+        self.assertAlmostEqual(
+            patch_gpx_time.diff_seconds(query_points_start_time, fixed_points_start_time),
+            36,
+            places=2)
+
+        # check max and min time diffs along the outputs and inputs
+        # see the generator for some justification for these numbers
+        # this has a gap
+        diff_query = query_points_time[1:, 0] - query_points_time[0:-1, 0]
+        self.assertEqual(max(diff_query), 46)
+        self.assertEqual(min(diff_query), 2)
+        self.assertAlmostEqual(0.0, np.max(np.unique(diff_query) - [2.0, 46.0]), places=2)
+        diff_template = template_points_time[1:, 0] - template_points_time[0:-1, 0]
+        self.assertEqual(max(diff_template), 2)
+        self.assertEqual(min(diff_template), 2)
+        diff_fixed = fixed_points_time[1:, 0] - fixed_points_time[0:-1, 0]
+        self.assertEqual(max(diff_fixed), 2)
+        self.assertEqual(min(diff_fixed), 2)
+
 
     def test_diff_seconds(self):
         time1 = datetime.now()
