@@ -105,6 +105,13 @@ class MyTestCase(unittest.TestCase):
             36,
             places=2)
 
+        # check end times
+        template_end_time = template_points_start_time+timedelta(seconds=template_points_time[-1, 0])
+        query_end_time = query_points_start_time+timedelta(seconds=query_points_time[-1, 0])
+        fixed_end_time = fixed_points_start_time+timedelta(seconds=fixed_points_time[-1, 0])
+        self.assertTrue(query_end_time == fixed_end_time)
+        self.assertTrue(template_end_time < query_end_time)
+
         # check max and min time diffs along the outputs and inputs
         # see the generator for some justification for these numbers
         # this has a gap
