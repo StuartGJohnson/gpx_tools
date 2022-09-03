@@ -12,14 +12,14 @@ import matplotlib.pyplot as plt
 def points_to_gpx(
         name: str,
         points: np.ndarray,
-        points_time: np.ndarray) -> gp.gpx.GPX:
+        points_time: np.ndarray,
+        base_time: datetime) -> gp.gpx.GPX:
     # update the points in gfp_query_copy
     gpx = gp.gpx.GPX()
     gpx.tracks = [gp.gpx.GPXTrack()]
     gpx.tracks[0].segments = [gp.gpx.GPXTrackSegment()]
     gpx.name = name
     track_points = []
-    base_time = datetime.now()
     for ind_pt in range(0, points.shape[0]):
         time = base_time + timedelta(seconds=float(points_time[ind_pt, 0]))
         track_points.append(gp.gpx.GPXTrackPoint(latitude=points[ind_pt, 0], longitude=points[ind_pt, 1], time=time))
@@ -53,8 +53,8 @@ def gen_gpx():
     plt.show()
     # ok. we have timestamps (in seconds) and lat,lon
     # to GPX!
-    gpx_query = points_to_gpx('query', query_lat_lon, t_query)
-    gpx_template = points_to_gpx('template', template_lat_lon, t_template)
+    gpx_query = points_to_gpx('query', query_lat_lon, t_query, time_start)
+    gpx_template = points_to_gpx('template', template_lat_lon, t_template, time_start)
     return gpx_query, gpx_template
 
 
