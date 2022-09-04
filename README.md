@@ -63,8 +63,8 @@ A second, much simpler algorithm is to simply find missing time intervals in the
 <li> For each point in the query:
 <ol>
 <li>Compute the time gap to the next query point.</li>
-<li>If the time gap is > max_time_gap:</li>
-<li>Append all reference points within the time gap to the output.</li>
+<li>If the time gap is >= max_time_gap: append all reference points within the time gap to the output.</li>
+<li>If the time gap is < max_time_gap: append the query point to the output.</li>
 </ol>
 <li> If the latest timestamp in the reference is after the latest timestamp in the query, and the difference is greater that max_time_gap, append the reference data with timestamps after the query data to the output. </li>
 </ol>
