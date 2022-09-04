@@ -43,42 +43,28 @@ def gen_gpx():
     query_lat_lon = t_query * speed + start_lat_lon
     # tweak the template a bit so I can distinguish the two
     template_lat_lon = t_template * speed + start_lat_lon
-    plt.figure()
-    plt.plot(query_lat_lon[:, 0], query_lat_lon[:, 1], 'r+')
-    plt.title('query')
-    plt.show()
-    plt.figure()
-    plt.plot(template_lat_lon[:, 0], template_lat_lon[:, 1], 'go')
-    plt.title('template')
-    plt.show()
     # ok. we have timestamps (in seconds) and lat,lon
     # to GPX!
     gpx_query = points_to_gpx('query', query_lat_lon, t_query, time_start)
     gpx_template = points_to_gpx('template', template_lat_lon, t_template, time_start)
-    return gpx_query, gpx_template
+    return gpx_query, gpx_template, query_lat_lon, template_lat_lon
 
 
 class MyTestCase(unittest.TestCase):
-    def test_gen(self):
-        q, t = gen_gpx()
-        query_points = patch_gpx_time.gpx_to_lat_lon(q.tracks[0].segments[0].points)
-        template_points = patch_gpx_time.gpx_to_lat_lon(t.tracks[0].segments[0].points)
-        plt.figure()
-        plt.plot(query_points[:, 0], query_points[:, 1], 'r+')
-        plt.title('query')
-        plt.show()
-        plt.figure()
-        plt.plot(template_points[:, 0], template_points[:, 1], 'r+')
-        plt.title('template')
-        plt.show()
-
     def test_generated(self):
-        q, t = gen_gpx()
+        # todo: test elevation and other fields
+        q, t, query_lat_lon, template_lat_lon = gen_gpx()
         fixed = patch_gpx_time.patch_gpx(q, t, max_time_gap_seconds=30)
         fixed_points = patch_gpx_time.gpx_to_lat_lon(fixed.tracks[0].segments[0].points)
+        # offset these subsets of data so I can see the results
         plt.figure()
-        plt.plot(fixed_points[:, 0], fixed_points[:, 1], 'r+')
-        plt.title('fixed')
+        plt.plot(fixed_points[:, 0], fixed_points[:, 1], 'g+')
+        plt.plot(query_lat_lon[:, 0] + 0.2, query_lat_lon[:, 1], 'r+')
+        plt.plot(template_lat_lon[:, 0] - 0.2, template_lat_lon[:, 1], 'b+')
+        plt.legend(['fixed', 'query', 'reference'])
+        plt.title('query, reference and fixed trajectories (0.2 offset in lat)')
+        plt.xlabel('lat')
+        plt.ylabel('lon')
         plt.show()
         fixed_points_time, fixed_points_start_time = \
             patch_gpx_time.gpx_to_time_seconds(fixed.tracks[0].segments[0].points)
@@ -128,7 +114,6 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(max(diff_fixed), 2)
         self.assertEqual(min(diff_fixed), 2)
 
-
     def test_diff_seconds(self):
         time1 = datetime.now()
         time2 = time1 + timedelta(seconds=10)
@@ -138,11 +123,6 @@ class MyTestCase(unittest.TestCase):
         td = patch_gpx_time.diff_seconds(time1, time2)
         print(td)
         self.assertEqual(td, -10)
-
-    def test_point(self):
-        # what is this thing (debugger)?
-        pt = gp.gpx.GPXTrackPoint()
-        pass
 
     def test_gpx_pair(self, folium_output=True):
         # process the gpx files from the Calero ride
