@@ -62,6 +62,7 @@ A second, much simpler algorithm is to simply find missing time intervals in the
 <li> If the earliest timestamp in the reference is before the earliest timestamp in the query, and the difference is greater that max_time_gap, include the reference data before the query data in the output. </li>
 <li> For each point in the query:
 <ol>
+<li>If this is the last point in the query: append the query point to the output and exit step 3.</li>
 <li>Compute the time gap to the next query point.</li>
 <li>If the time gap is >= max_time_gap: append all reference points within the time gap to the output.</li>
 <li>If the time gap is < max_time_gap: append the query point to the output.</li>
