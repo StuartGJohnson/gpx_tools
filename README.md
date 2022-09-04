@@ -9,6 +9,8 @@ Note: this file uses LaTex support recently provided by Github. Sometimes these 
 
 ## Installation
 
+## Usage
+
 ## A non-GPX example (building on the dtw-python unit tests)
 
 ### DTW in action
@@ -37,9 +39,9 @@ As the alignment plot shows, these two trajectories have a shared central portio
 ### Design preferences
 <p> For the purposes of repairing Strava activities, there are two design preferences. First, one of the trajectories needs to be preferred in the result. For example, if I am correcting my activity, I would prefer that the output is composed of the original data from my activity as much as possible. Second, when using data from either activity, I would prefer that data to be unchanged from the original. Third, the algorithm should handle fairly complex trajectories which might pass through the same points - in any order or number of times. Fourth, the algorithm should assume that missing jointly traveled points could be present at the beginning and end of the activity.</p>
 
-### A correction algorithm
+### Two correction algorithms
 
-An algorithm to satisfy the design preferences, where we have a preference for the query trajectory, is:
+An algorithm to satisfy the design preferences, where we have a preference for the query trajectory, is <b>patch_gpx_spatial</b>:
 <ol>
 <li> Compute the dynamic time warping between the query trajectory and the reference trajectory. </li>
 <li> Assign the query to the output trajectory via the DTW alignment index for the query.</li>
@@ -53,17 +55,16 @@ Some experimentation with this process with real GPX data (see below), suggests 
 A downside of this is now we have a nuisance parameter - the distance threshold. Since sampling intervals in real GPX data are quite complex - it is also not entirely clear (at this point) how to determine this from the data. However, I find that a distance threshold of 50m works fairly well for the mountain biking data included here. For the circular trajectory, I use robust (SMAD) statistics of the distance increments along the query. In a trajectory with a few large distance gaps in the query, the robust statistics will ignore the large values.
 </p>
 
-A second, much simpler algorithm is to simply find missing time intervals in the query trajectory and insert reference trajectory data present in those missing time intervals into the corrected output. This is slightly more complex due to possible data overhangs at the ends.
+A second, much simpler algorithm is to simply find missing time intervals in the query trajectory and insert reference trajectory data present in those missing time intervals into the corrected output. This is slightly more complex due to possible data overhangs at the ends. The algorithm is <b>patch_gpx_time</b>:
 
 <ol>
 <li> establish a time threshold, max_time_gap, above which time gaps in the query data are considering missing data - i.e. the user is not sampling the trajectory when he should.</li>
 <li> If the earliest timestamp in the reference is before the earliest timestamp in the query, and the difference is greater that max_time_gap, include the reference data before the query data in the output. </li>
-<li> Compute all (suspect) time gaps > max_time_gap in the query. </li>
-<li> Append all data in the query from the beginning (of the query) to the first time gap in the output.</li>
-<li> For each suspect time gap in the query:
+<li> For each point in the query:
 <ol>
+<li>Compute the time gap to the next query point.</li>
+<li>If the time gap is > max_time_gap:</li>
 <li>Append all reference points within the time gap to the output.</li>
-<li>Append all query points after the time gap but before the next time gap (or end of the query) to the output.</li>
 </ol>
 <li> If the latest timestamp in the reference is after the latest timestamp in the query, and the difference is greater that max_time_gap, append the reference data with timestamps after the query data to the output. </li>
 </ol>
@@ -84,11 +85,17 @@ The circular trajectory is repaired via the correction algorithm into the trajec
 
 ## GPX example
 
-The typical usage model for the edit_gpx tool is to mend GPX files obtained from Strava - when I am using this, I download my own GPX file of a damaged activity, and then ask whomever I rode or ran the activity with to send me the GPX file of their corresponding activity. Although Strava settings can be adjusted, I have found that typically a complete GPX file is only produced by the owner of the activity on Strava.
+The typical usage model for the patch_gpx tools is to mend GPX files obtained from Strava - when I am using this, I download my own GPX file of a damaged activity, and then ask whomever I rode or ran the activity with to send me the GPX file of their corresponding activity. Although Strava settings can be adjusted, I have found that typically a complete GPX file is only produced by the owner of the activity on Strava.
 
-An example of the repair of an activity at Calero County Park in California is shown in the following link (I suggest you open it in another tab or window so that you can read along with the comments here. At the time of writing it did not seem possible to get the README.md rendered page to render this interactive folium map):
+An example of the repair of an activity at Calero County Park in California is shown in the following links (I suggest you open it in another tab or window so that you can read along with the comments here. At the time of writing it did not seem possible to get the README.md rendered page to render this interactive folium map). The first link uses the <b>patch_gpx_spatial</b> algorithm:
 
-[patched gpx example](https://stuartgjohnson.github.io/gpx_tools/test/calero_patched_spatial.html)
+[patched_gpx_spatial example](https://stuartgjohnson.github.io/gpx_tools/test/calero_patched_spatial.html)
 
-In this example, there are three routes plotted. My route, the query, is in dashed red. My friend's route (provided here with his permission) is dashed blue. The corrected route is solid green. Note you should be able to zoom in and out on this map/route in your browser. You should see that the route is almost always showing the red dashes and the green together - recall the query (my route) is preferred. The fix is in the section near Bald Peaks - where I forgot to restart my device at the snack stop at the top of the climb up Longwall Canyon Trail. In that section the fixed route tracks my friend's ride along Bald Peaks Trail.
+and the second link uses the <b>patch_gpx_time</b> algorithm:
+
+[patched_gpx_time example](https://stuartgjohnson.github.io/gpx_tools/test/calero_patched_time.html)
+
+In this example, there are three routes plotted. My route, the query, is in dashed red. My friend's route (provided here with his permission) is dashed blue. The corrected route is solid green. Note you should be able to zoom in and out on this map/route in your browser. You should see that the route is almost always showing the red dashes and the green together - recall the query (my route) is preferred. The primary fix is in the section near Bald Peaks - where I forgot to restart my device at the snack stop at the top of the climb up Longwall Canyon Trail. In that section the fixed route tracks my friend's ride along Bald Peaks Trail.
+
+Note the two algorithms give very similar results for this data, but there is a peculiar difference in the trajectories at the beginning and end (at the Rancho San Vicente Entrance Parking Lot). This probably needs to be investigated a bit.
 
