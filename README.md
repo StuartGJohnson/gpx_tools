@@ -4,13 +4,79 @@ Tools and background on fusing GPX files for the purpose of correcting missing p
 </p>
 
 <p>
-Note: this file may use LaTex support recently provided by Github. Sometimes these equations do not render, and you will see strange things with backslashes and odd looking bits (raw LaTex). If this is the case, reload the page in your browser.
+Note: this file may use LaTex support recently provided by github. Sometimes these equations do not render, and you will see strange things with backslashes and odd looking bits (raw LaTex). If this is the case, reload the page in your browser.
 </p>
 
 ## Installation
 
+This repo contains the necessary files to maintain whatever python environment you wish to use. This includes files:
+
+```
+setup.py
+requirements.txt
+```
+
+As a reminder, if you wish to develop in this repo, then I suggest something like:
+
+```
+(from the repo dir)
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+on the other hand, if you merely which to run one or both of the file patch scripts, I suggest:
+
+```
+(from the repo dir)
+python3 -m venv venv
+source venv/bin/activate
+pip install .
+(or)
+python setup.py install
+```
+
+In any case, this package will be installed as 
+
+```
+gpx-tools
+```
+
+so it can be easily uninstalled with:
+
+```
+pip uninstall gpx-tools
+```
+
 ## Usage
 
+Once installed, there are two scripts which can be run in linux or OSX without any python invocation. These two scripts and their algorithms are described below and, for example, can be invoked from the command line in the repo home directory as:
+
+```
+patch_gpx_time data/Calero_Mayfair_ranch_trail.gpx data/Calero_big_ride_2.gpx test_patch_time.gpx
+```
+
+```
+patch_gpx_spatial data/Calero_Mayfair_ranch_trail.gpx data/Calero_big_ride_2.gpx test_patch_spatial.gpx
+```
+
+also note that both of these scripts respond usefully to the --help argument.
+
+A further refinement is that unit tests are provided with the plots (in particular, plt.show()) off by default. This assures they will run on OSX, but it is also useful in pycharm on linux or Windows to set or some of the 
+
+```
+do_plots=False
+```
+
+test default arguments to True to generate plots on the fly - and write some of  them to disk.
+
+Running tests can be accomplished from the <repo>/test directory via:
+
+```
+python -m unittest test_dtw.py
+python -m unittest test_patch_gpx_spatial.py
+python -m unittest test_patch_gpx_time.py
+```
 
 ### Usage model
 
