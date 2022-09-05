@@ -31,7 +31,7 @@ def gen_2d(len_pts=100):
     return query, template
 
 class MyTestCase(unittest.TestCase):
-    def test_dtw_1d(self):
+    def test_dtw_1d(self, do_plots=False):
         # test code from the dtw-python docs
         # compares two 1-d sinusoidal curves
         # A noisy sine wave as query
@@ -44,12 +44,12 @@ class MyTestCase(unittest.TestCase):
         # Find the best match with the canonical recursion formula
         alignment = dtw.dtw(query, template, keep_internals=True)
 
-        # Display the warping curve, i.e. the alignment curve
-        alignment.plot(type="threeway")
+        if do_plots:
+            # Display the warping curve, i.e. the alignment curve
+            alignment.plot(type="threeway")
+            alignment.plot(type="twoway")
 
-        alignment.plot(type="twoway")
-
-    def test_dtw_2d(self):
+    def test_dtw_2d(self, do_plots=False):
 
         query, template = gen_2d(100)
 
@@ -65,13 +65,14 @@ class MyTestCase(unittest.TestCase):
         # the query distance is inflated by noise
         print(query_dist)
 
-        # Display the warping curve, i.e. the alignment curve
-        alignment.plot(type="threeway")
-        # this does not work in higher dimensions!
-        #alignment.plot(type="twoway")
+        if do_plots:
+            # Display the warping curve, i.e. the alignment curve
+            alignment.plot(type="threeway")
+            # this does not work in higher dimensions!
+            #alignment.plot(type="twoway")
 
 
-    def test_dtw_patch(self):
+    def test_dtw_patch(self, do_plots=False):
         # merge two trajectories into one. use patch_gpx_spatial.patch_deletions_with_template
         # also generates plots for the README.md
         query, template = gen_2d(100)
@@ -88,14 +89,14 @@ class MyTestCase(unittest.TestCase):
         delta_dist_median, delta_dist_smad = patch_gpx_spatial.get_point_stats(points=query,
                                                                                points2=None,
                                                                                smad_factor=smad_factor,
-                                                                               do_plots=True,
+                                                                               do_plots=do_plots,
                                                                                do_plots_output_name=output_name)
         # patch the query
         # aligned values more than smad_factor*SMAD indicate differences to be patched
         output, _ = patch_gpx_spatial.patch_deletions_with_template(query,
                                                                     template,
                                                                     delta_dist_median + smad_factor * delta_dist_smad,
-                                                                    do_plots=True,
+                                                                    do_plots=do_plots,
                                                                     do_plots_output_name=output_name)
         plt.figure()
         plt.plot(output[:, 0], 'b+')
