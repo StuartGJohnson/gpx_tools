@@ -75,7 +75,7 @@ class MyTestCase(unittest.TestCase):
         self.assertTrue(np.abs(np.max(dist_mat)-6342) < 1.0)
         print(np.max(dist_mat))
 
-    def test_gpx_dtw(self):
+    def test_gpx_dtw(self, do_plots=False):
         # process the gpx files from the Calero ride
         # also generates plots for the README.md
         qfile = '../data/Calero_Mayfair_ranch_trail.gpx'
@@ -85,7 +85,7 @@ class MyTestCase(unittest.TestCase):
         #tfile = '../data/Calero_Mayfair_ranch_trail.gpx'
         #qfile = '../data/Calero_big_ride_2.gpx'
         #ofile = 'calero_fixed_reversed.gpx'
-        gpx = patch_gpx_spatial.patch_gpx(qfile, tfile, ofile, do_plots=True, folium_output=True)
+        gpx = patch_gpx_spatial.patch_gpx(qfile, tfile, ofile, do_plots=do_plots, folium_output=True)
         self.assertTrue(os.path.exists(ofile))
         gf = open(qfile, 'r')
         gfp_query = gp.parse(gf)

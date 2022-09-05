@@ -56,21 +56,22 @@ def gen_gpx():
 
 
 class MyTestCase(unittest.TestCase):
-    def test_generated(self):
+    def test_generated(self, do_plots=False):
         # todo: test elevation and other fields
         q, t, query_lat_lon, template_lat_lon = gen_gpx()
         fixed = patch_gpx_time.patch_gpx(q, t, max_time_gap_seconds=30)
         fixed_points = patch_gpx_time.gpx_to_lat_lon(fixed.tracks[0].segments[0].points)
         # offset these subsets of data so I can see the results
-        plt.figure()
-        plt.plot(fixed_points[:, 0], fixed_points[:, 1], 'g+')
-        plt.plot(query_lat_lon[:, 0] + 0.2, query_lat_lon[:, 1], 'r+')
-        plt.plot(template_lat_lon[:, 0] - 0.2, template_lat_lon[:, 1], 'b+')
-        plt.legend(['fixed', 'query', 'reference'])
-        plt.title('query, reference and fixed trajectories (0.2 offset in lat)')
-        plt.xlabel('lat')
-        plt.ylabel('lon')
-        plt.show()
+        if do_plots:
+            plt.figure()
+            plt.plot(fixed_points[:, 0], fixed_points[:, 1], 'g+')
+            plt.plot(query_lat_lon[:, 0] + 0.2, query_lat_lon[:, 1], 'r+')
+            plt.plot(template_lat_lon[:, 0] - 0.2, template_lat_lon[:, 1], 'b+')
+            plt.legend(['fixed', 'query', 'reference'])
+            plt.title('query, reference and fixed trajectories (0.2 offset in lat)')
+            plt.xlabel('lat')
+            plt.ylabel('lon')
+            plt.show()
         fixed_points_time, fixed_points_start_time = \
             patch_gpx_time.gpx_to_time_seconds(fixed.tracks[0].segments[0].points)
         #print(fixed_points_time)
