@@ -98,15 +98,17 @@ class MyTestCase(unittest.TestCase):
                                                                     delta_dist_median + smad_factor * delta_dist_smad,
                                                                     do_plots=do_plots,
                                                                     do_plots_output_name=output_name)
-        plt.figure()
-        plt.plot(output[:, 0], 'b+')
-        plt.plot(output[:, 1], 'r+')
-        plt.title('corrected query')
-        plt.xlabel('query index')
-        plt.ylabel('query value')
-        plt.legend(['query[:,0]', 'query[:,1]'], loc='center')
-        plt.savefig('test_dtw_patch.corrected.png')
-        plt.show()
+
+        if do_plots:
+            plt.figure()
+            plt.plot(output[:, 0], 'b+')
+            plt.plot(output[:, 1], 'r+')
+            plt.title('corrected query')
+            plt.xlabel('query index')
+            plt.ylabel('query value')
+            plt.legend(['query[:,0]', 'query[:,1]'], loc='center')
+            plt.savefig('test_dtw_patch.corrected.png')
+            plt.show()
 
         # compute distance along the output - this should be 5pi/2, except
         # that the query is noisy, so it is query_dist + pi/2
