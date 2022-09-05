@@ -1,4 +1,10 @@
 import unittest
+import os
+import sys
+
+if '..' not in sys.path:
+    sys.path.insert(1, os.path.join(sys.path[0], '..'))
+
 import gpxpy as gp
 import numpy as np
 import time
@@ -7,7 +13,6 @@ import matplotlib.pyplot as plt
 
 import patch_gpx_spatial
 from patch_gpx_spatial import gpx_to_points3
-import os
 
 
 class MyTestCase(unittest.TestCase):

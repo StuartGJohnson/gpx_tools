@@ -1,10 +1,15 @@
 import unittest
+import os
+import sys
+
+if '..' not in sys.path:
+    sys.path.insert(1, os.path.join(sys.path[0], '..'))
+
 from datetime import datetime, timedelta
 
 import gpxpy.gpx
 import patch_gpx_time
 import gpxpy as gp
-import os
 import numpy as np
 import matplotlib.pyplot as plt
 

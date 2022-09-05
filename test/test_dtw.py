@@ -1,11 +1,14 @@
 import unittest
+import os
+import sys
+
+if '..' not in sys.path:
+    sys.path.insert(1, os.path.join(sys.path[0], '..'))
+
 import numpy as np
 import dtw
 import matplotlib.pyplot as plt
-import skimage.measure as measure
 import patch_gpx_spatial
-import scipy.stats as sci_stats
-import folium
 
 def gen_2d(len_pts=100):
     # a full 2pi
