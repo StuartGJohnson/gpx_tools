@@ -62,13 +62,13 @@ patch_gpx_spatial data/Calero_Mayfair_ranch_trail.gpx data/Calero_big_ride_2.gpx
 
 also note that both of these scripts respond usefully to the --help argument.
 
-A further refinement is that unit tests are provided with the plots (in particular, plt.show()) off by default. This assures they will run on OSX, but it is also useful in pycharm on linux or Windows to set or some of the 
+A further refinement is that unit tests are provided with the plots (in particular, plt.show()) off by default. This assures they will run on OSX, but it is also useful on linux or Windows to set some or all of the 
 
 ```
 do_plots=False
 ```
 
-test default arguments to True to generate plots on the fly - and write some of  them to disk.
+test default arguments to True to generate plots on the fly - and write some of them to disk.
 
 Running tests can be accomplished from the <repo>/test directory via:
 
