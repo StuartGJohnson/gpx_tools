@@ -48,6 +48,8 @@ so it can be easily uninstalled with:
 pip uninstall gpx-tools
 ```
 
+Installation and testing has been done on Linux (Ubuntu 20.04), Mac OSX Catalina, and Windows 10. All using python 3.8.
+
 ## Usage
 
 Once installed, there are two scripts which can be run in linux or OSX without any python invocation. These two scripts and their algorithms are described below and, for example, can be invoked from the command line in the repo home directory as:
