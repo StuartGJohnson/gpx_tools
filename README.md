@@ -62,7 +62,15 @@ patch_gpx_time data/Calero_Mayfair_ranch_trail.gpx data/Calero_big_ride_2.gpx te
 patch_gpx_spatial data/Calero_Mayfair_ranch_trail.gpx data/Calero_big_ride_2.gpx test_patch_spatial.gpx
 ```
 
-also note that both of these scripts respond usefully to the --help argument.
+also note that both of these scripts respond usefully to the --help argument. On Windows, one can omit the shebang-decorated scripts above and invoke the python directly - assuming this is done after the installation step above:
+
+```
+python patch_gpx_time.py data/Calero_Mayfair_ranch_trail.gpx data/Calero_big_ride_2.gpx test_patch_time.gpx
+```
+
+```
+python patch_gpx_spatial.py data/Calero_Mayfair_ranch_trail.gpx data/Calero_big_ride_2.gpx test_patch_spatial.gpx
+```
 
 A further refinement is that unit tests are provided with the plots (in particular, plt.show()) off by default. This assures they will run on OSX, but it is also useful on linux or Windows to set some or all of the 
 
