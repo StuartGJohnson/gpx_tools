@@ -118,10 +118,12 @@ An algorithm which only uses location data (latitude, longitude and elevation) i
 The results of a DTW alignment (via the PyPI dtw-python package) are shown in Figure 1. DTW uses the Euclidean distance matrix between all points in the reference and query trajectories to build two indices - the alignment. The contents of these indices are plotted as a point along the x (query) and y (reference) axes of the main plot in Figure 1. The two subplots along the x and y axes are the local coordinates (mean corrected) in meters - corresponding to latitude (blue), longitude (orange) and elevation (green). Note the reference index is roughly 4X longer than the query - the GPS device is sampling much more often in the reference data. The vertical jump in the indexes at around 1700 in the query is the offending section of the trajectory to be repaired.
 </p>
 
+<br>
 <figure>
     <img src="test/calero_patched_spatial.alignment.png">
     <figcaption>Figure 1. a DTW alignment between two GPX trajectories</figcaption>
 </figure>
+</br>
 
 <p>
 Some experimentation with this process with real GPX data (see below), suggests that deciding on when the reference trajectory points are missing from the alignment merely by looking at the alignment index is problematic and results in fidgety identification of missing regions of one trajectory. Part of the problem is that GPX trajectories can have very different spatial sampling - due to device settings - and this smears out the beginnings and ends of missing regions. One solution is to choose a distance threshold - and find the connected regions in the alignment where the two trajectories exceed this threshold. Then, for each connected region, choose to insert the reference points in the output only if the reference sampling is more than the query sampling in that region.
