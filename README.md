@@ -116,6 +116,8 @@ An algorithm which only uses location data (latitude, longitude and elevation) i
 
 <p>
 Some experimentation with this process with real GPX data (see below), suggests that deciding on when the reference trajectory points are missing from the alignment merely by looking at the alignment index is problematic and results in fidgety identification of missing regions of one trajectory. Part of the problem is that GPX trajectories can have very different spatial sampling - due to device settings - and this smears out the beginnings and ends of missing regions. One solution is to choose a distance threshold - and find the connected regions in the alignment where the two trajectories exceed this threshold. Then, for each connected region, choose to insert the reference points in the output only if the reference sampling is more than the query sampling in that region.
+
+Finally, <b>patch_gpx_spatial</b> is not the tidiest solution in that it does not include so-called extension data for any track points. This means that data like temperature and heart rate - even for the query - are not included in the output. This could be added fairly easily. The <b>patch_gpx_time</b> implementation below faithfully copies query extension data to the output.
 </p>
 
 #### patch_gpx_time
