@@ -268,7 +268,7 @@ def main(args):
                         help='the name of the gpx file to patch the query_gpx with')
     parser.add_argument('output_gpx',
                         help='the name of the output gpx file')
-    parser.add_argument('--dist', default=50,
+    parser.add_argument('--dist', type=float, default=50,
                         help='the distance threshold for query vs template misalignment (in meters) default=50')
     args = parser.parse_args(args)
     patch_gpx(args.query_gpx, args.template_gpx, args.output_gpx, args.dist)

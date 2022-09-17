@@ -141,7 +141,7 @@ def main(args):
                         help='the name of the gpx file to patch the query_gpx with')
     parser.add_argument('output_gpx',
                         help='the name of the output gpx file')
-    parser.add_argument('--time', default=30,
+    parser.add_argument('--time', type=float, default=30,
                         help='the time threshold for patching time gaps in the query (in seconds) default=30')
     args = parser.parse_args(args)
     patch_gpx_file(args.query_gpx, args.template_gpx, args.output_gpx, args.time)
