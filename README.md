@@ -134,6 +134,7 @@ Finally, <b>patch_gpx_spatial</b> is not the tidiest solution in that it does no
 
 #### patch_gpx_time
 
+<p>
 A second, much simpler algorithm is to simply find missing time intervals in the query trajectory and insert reference trajectory data present in those missing time intervals into the corrected output. This is slightly more complex due to possible data overhangs at the ends. The algorithm is <b>patch_gpx_time</b>:
 
 <ol>
@@ -148,6 +149,7 @@ A second, much simpler algorithm is to simply find missing time intervals in the
 </ol>
 <li> If the latest timestamp in the reference is after the latest timestamp in the query, and the difference is greater that <i>max_time_gap</i>, append the reference data with timestamps after the query data to the output. </li>
 </ol>
+</p>
 
 ## GPX example
 
