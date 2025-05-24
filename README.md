@@ -157,11 +157,11 @@ The typical usage model for the patch_gpx tools is to mend GPX files obtained fr
 
 An example of the repair of an activity at Calero County Park in California is shown in the following links (I suggest you open it in another tab or window so that you can read along with the comments here. At the time of writing it did not seem possible to get the README.md rendered page to render this interactive folium map). The first link uses the <b>patch_gpx_spatial</b> algorithm:
 
-<p><a href="test/calero_patched_spatial.html">patched_gpx_spatial example</a></p>
+<p><a href="https://stuartgjohnson.github.io/gpx_tools/test/calero_patched_spatial.html">patched_gpx_spatial example</a></p>
 
 and the second link uses the <b>patch_gpx_time</b> algorithm:
 
-<p><a href="test/calero_patched_time.html">patched_gpx_time example</a></p> 
+<p><a href="https://stuartgjohnson.github.io/gpx_tools/test/calero_patched_time.html">patched_gpx_time example</a></p> 
 
 In this example, there are three routes plotted. My route, the query, is in dashed red. My friend's route (provided here with his permission) is dashed blue. The corrected route is solid green. Note you should be able to zoom in and out on this map/route in your browser. You should see that the route is almost always showing the red dashes and the green together - recall the query (my route) is preferred. The primary fix is in the section near Bald Peaks - where I forgot to restart my device at the snack stop at the top of the climb up Longwall Canyon Trail. In that section the fixed route tracks my friend's ride along Bald Peaks Trail.
 
