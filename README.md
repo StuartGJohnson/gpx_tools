@@ -147,6 +147,7 @@ A second, much simpler algorithm is to simply find missing time intervals in the
 <li>If the time gap is >= <i>max_time_gap</i>: append all reference points within the time gap to the output.</li>
 <li>If the time gap is < <i>max_time_gap</i>: append the query point to the output.</li>
 </ol>
+</li>
 <li> If the latest timestamp in the reference is after the latest timestamp in the query, and the difference is greater that <i>max_time_gap</i>, append the reference data with timestamps after the query data to the output. </li>
 </ol>
 </p>
