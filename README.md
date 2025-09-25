@@ -9,46 +9,15 @@ Note: this file may use LaTex support recently provided by github. Sometimes the
 
 ## Installation
 
-This repo contains the necessary files to maintain whatever python environment you wish to use. This includes files:
+For development, on windows, after installing python 3.11, I used:
 
-```
-setup.py
-requirements.txt
-```
-
-As a reminder, if you wish to develop in this repo, then I suggest something like:
-
-```
-(from the repo dir)
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
+```angular2html
+py -3.11 venv venv
+.\venv\Scripts\Activate.ps1
+python -m pip install -U pip setuptools wheel
+python -m pip install -e .
 ```
 
-on the other hand, if you merely which to run one or both of the file patch scripts, I suggest:
-
-```
-(from the repo dir)
-python3 -m venv venv
-source venv/bin/activate
-pip install .
-(or)
-python setup.py install
-```
-
-In any case, this package will be installed as 
-
-```
-gpx-tools
-```
-
-so it can be easily uninstalled with:
-
-```
-pip uninstall gpx-tools
-```
-
-Installation and testing has been done on Linux (Ubuntu 20.04), Mac OSX Catalina, and Windows 10. All using python 3.8.
 
 ## Usage
 
